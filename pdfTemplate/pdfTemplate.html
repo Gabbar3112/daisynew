@@ -1,0 +1,256 @@
+<!doctype html>
+<html id='abc'>
+
+<head>
+    <meta charset="utf-8">
+    <title>A simple, clean, and responsive HTML invoice template</title>
+
+    <style>
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+        }
+
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        /*.invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }*/
+
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
+        }
+
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+        }
+
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-box table tr.item.last1 td {
+            border-bottom: none;
+        }
+
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .invoice-box table tr.top table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+
+            .invoice-box table tr.information table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+        }
+
+        /** RTL **/
+        .rtl {
+            direction: rtl;
+            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        }
+
+        .rtl table {
+            text-align: left;
+        }
+
+        .rtl table tr td:nth-child(2) {
+            text-align: left;
+        }
+
+        .first {
+            text-align: end;
+            width: 30px;
+        }
+
+        .middle {
+            text-align: end;
+            width: 120px;
+        }
+
+        .last {
+            text-align: end;
+            width: 90px;
+        }
+
+        .invoice-box:before {
+            content: 'Aakriti Mehndi';
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: -1;
+
+            color: #0d745e;
+            font-size: 100px;
+            font-weight: 500px;
+            display: grid;
+            justify-content: center;
+            align-content: center;
+            opacity: 0.1;
+            transform: rotate(-45deg);
+            user-select: none;
+            /* Non-prefixed version for chorme, opera and*/
+            -ms-user-select: none;
+            /* Internet Explorer, Edge */
+            -moz-user-select: none;
+            /* Firefox */
+            -khtml-user-select: none;
+            /* Konqueror HTML */
+            -webkit-touch-callout: none;
+            /* iOS Safari */
+            -webkit-user-select: none;
+            /* Safari */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-box">
+
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="6">
+                    <table>
+                        <tr>
+                            <td>
+                                <!-- <img src="https://lh3.googleusercontent.com/8O7cJRp0WHHdrf4smrgv2INjU8HD8KFeFSU_JzQs5qEXiQYw-_Bial6fD_visMFR0tgxfVoZ4PYF4TtJ0LA9SYQ01uKoTJbHwqid6OoMvf_3IXkR7nb9R-Ww22MSk45XIn_3CUr8LzJjtpt9AhcuJG82O3x12tuQJQ6whwVDmGJJvae8VT5zfWOzQjK5nvYYeisNCbbMVgW2bXx94agoO8H-Nsiha_Ym1glHLcJ3tYabFhkgwJ8LoTEh7xrLcn512LmDREdhKA4fe9NFU91iXi_TfIX0U5k8S1fW1YweWknqzZFslMJWGHHbvMTqY_3rLtB0tEMGWP8V0CHga3gvxp-uYeT_RpYOL6WMzNSIY4BG6VV4iJe3tmZb_a7m3EUGDSAPcuZzGw4foozMYxu1v6qhdq-j7XMQ5zeR9wHyUtltc5jQqspJjNQfO8-rkZRLHxBUaX_gvRBWvvuMS74JL6DVFo2OhBpg_ZjFkK3FaauKKjuSAl8G4H-y7wt5o2IXe7JD5mwNUwSEbiN5K6lHsNYQiR5Pvz_cAhJYYCJ4d7zOmiZDcJQufVdbbeWYO1nDjEums2veb16siv4TPItvQMJnJRWWOV-MG94HIk5tx3KgqXRP2zoyj7W12aoFaJaFBV7_EYbtk1No39SqF9NclTCluSsE-Pdyz9e1jST_nQbT8Ije1U0QZ2diGNt9_g=w182-h114-no?authuser=2"
+                                style="width:140px; max-width:300px;"> -->
+                                <h1 class="mb-0">
+                                    A . M. C
+                                </h1>
+                                <h5>Aakriti Mehndi Creations</h5>
+                            </td>
+
+                            <td style="text-align: end">
+                                Invoice #: {{invoice_number}}<br>
+                                Event Date: {{event_date}}<br>
+                                Billing Date: {{current_date}}<br>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="6">
+                    <table>
+                        <tr>
+                            <td>
+                                Aakriti Mehndi Creations.<br>
+                                Adajan, Surat - 395009<br>
+                                +918866466215<br>
+                                aakritimehndicreations@gmail.com
+                            </td>
+
+                            <td style="text-align: end">
+                                Name: {{client_name}}<br>
+                                Phone: {{client_phone}}<br>
+                                Location: {{client_location}}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="heading">
+                <td colspan="3">
+                    Payment Method
+                </td>
+                <td colspan="3" style="text-align: right;">
+                    {{payment_method}}
+                </td>
+            </tr>
+            <tr class="heading">
+                <td colspan="3">Item</td>
+                <td class="first">Person</td>
+                <td class="middle">Price(for One)</td>
+                <td class="last">Price</td>
+            </tr>
+            <!-- <tr class="item">
+            <td colspan="3">sdfsd</td>
+            <td class="first">1</td>
+            <td class="middle">₹22</td>
+            <td class="last">₹22</td>
+        </tr>
+        <tr class="item">
+            <td colspan="3">sdfsd</td>
+            <td class="first">1</td>
+            <td class="middle">₹22</td>
+            <td class="last">₹22</td>
+        </tr>
+        <tr class="item">
+            <td colspan="3">sdfsd</td>
+            <td class="first">1</td>
+            <td class="middle">₹22</td>
+            <td class="last">₹22</td>
+        </tr>
+        <tr class="item">
+            <td colspan="3">sdfsd</td>
+            <td class="first">1</td>
+            <td class="middle">₹22</td>
+            <td class="last">₹22</td>
+        </tr> -->
+            {{tr_datas}}
+
+            <tr class="total">
+                <td colspan="3"></td>
+
+                <td colspan="3" style="text-align: end">
+                    Discount: ₹ {{discount_rs}}<br>
+                    Total: ₹ {{total_rs}}
+                </td>
+            </tr>
+        </table>
+        <h4 style="text-align: center;">Thank You For Using Our Service</h4>
+        <div style="text-align: center; font-size: 12px;">
+            <!-- Aakriti Mehndi Creations</br> -->
+            For more Assistance, contact Support:</br>
+            Phone No: +918866466215, Email: aakritimehndicreations@gmail.com</br>
+            https://www.aakritimehndicreations.in/
+        </div>
+    </div>
+</body>
+
+</html>
