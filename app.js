@@ -211,44 +211,4 @@ app.use(function (req, res, next) {
 
 
 
-// app.listen(config.port, () => console.info(`App listening on port ${config.port}`));
-
-// app.listen(config.port, () => console.info(`App listening on port ` + 'http://' + config.hostname + ':' + config.port))
-
-const server = https.createServer(app);
-server.listen(config.port);
-
-server.on('error', onError);
-server.on('listening', onListening);
-
-function onError(error) {
-    if (error.syscall !== 'listen') {
-        console.error(error.code + ' not equal listen', 'serverOnErrorHandler', 10)
-        throw error;
-    }
-
-
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-        case 'EACCES':
-            console.error(error.code + ':elavated privileges required', 'serverOnErrorHandler', 10);
-            process.exit(1);
-            break;
-        case 'EADDRINUSE':
-            console.error(error.code + ':port is already in use.', 'serverOnErrorHandler', 10);
-            process.exit(1);
-            break;
-        default:
-            console.error(error.code + ':some unknown error occured', 'serverOnErrorHandler', 10);
-            throw error;
-    }
-}
-
-function onListening() {
-
-    var addr = server.address();
-    var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    console.log('Listening on ' + bind);
-
-    console.log('server listening on port ' + addr.port)
-}
+app.listen(config.port, () => console.info(`App listening on port ${config.port}`));
