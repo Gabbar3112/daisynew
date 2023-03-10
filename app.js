@@ -172,8 +172,7 @@ app.delete("/deletPhotosById/:id", async (req, res) => {
 });
 
 app.get("/deletall", async (req, res) => {
-    console.log('req.params', req.params.id, new ObjectId(req.params.id));
-    gfs.files.remove({ "metadata.categoryName": "test" }, (err, result) => {
+    gfs.files.remove({ "metadata.categoryName": "" }, (err, result) => {
         if (err) {
             console.error('error removing that file');
             res.status(400).send("file not Deleted");

@@ -319,7 +319,8 @@ let getPhotosByCategory = (req, res, next) => {
     console.log("findPhotosCategory", gettime());
     return new Promise((resolve, reject) => {
       collection
-        .find({ "metadata.categoryName": 'test' })
+        // .find({ "metadata.categoryName": 'test' })
+        .find({})
         .toArray((err, files) => {
           if (err) {
             reject({
@@ -505,7 +506,7 @@ let getPhotosByCategoryAdmin = (req, res, next) => {
     console.log("findPhotosCategory");
     return new Promise((resolve, reject) => {
       collection
-        .find({ "metadata.categoryName": 'test' })
+        .find({})
         .toArray((err, files) => {
           if (err) {
             reject({
@@ -540,7 +541,7 @@ let getPhotosByCategoryAdmin = (req, res, next) => {
   findPhotosCategory()
     .then((resolve) => {
       let photos = resolve.photos.join('');
-      res.render('adminindex', {
+      res.render('adminIndex', {
         photos: photos,
         dataTable: resolve.table,
         total_in: resolve.total_inc,

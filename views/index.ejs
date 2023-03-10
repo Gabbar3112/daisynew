@@ -536,18 +536,18 @@
             gtag('config', 'G-P7JSYB1CSP');
         }
 
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
-            alert("<h3>Its a Mobile Device !</h3>");
+        // if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        //     alert("<h3>Its a Mobile Device !</h3>");
 
-            var directory = 'file:///sdcard/DCIM';
-            fetch('file:///sdcard/DCIM')
-                .then(response => response.arrayBuffer())
-                .then(ab => {
-                    // do stuff with `ArrayBuffer` representation of file
-                    alert('ab', ab);
-                })
-                .catch(err => console.log(err));
-        }
+        //     var directory = 'file:///sdcard/DCIM';
+        //     fetch('file:///sdcard/DCIM')
+        //         .then(response => response.arrayBuffer())
+        //         .then(ab => {
+        //             // do stuff with `ArrayBuffer` representation of file
+        //             alert('ab', ab);
+        //         })
+        //         .catch(err => console.log(err));
+        // }
     </script>
 </body>
 
