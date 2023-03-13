@@ -1,4 +1,6 @@
 let listOfFiles = [];
+let aboutFile = [];
+let teamFile = [];
 let listCat = {
     "test": "Test",
     "partyMehndi": "Party Mehndi",
@@ -29,6 +31,20 @@ if (window.self == window.top) {
 
         for (var i = 0, file; file = files[i]; i++) {
             listOfFiles.push(file);
+        }
+    });
+    $('#aboutFile').change(function (e) {
+        var files = e.target.files;
+
+        for (var i = 0, file; file = files[i]; i++) {
+            aboutFile.push(file);
+        }
+    });
+    $('#teamfile').change(function (e) {
+        var files = e.target.files;
+
+        for (var i = 0, file; file = files[i]; i++) {
+            teamFile.push(file);
         }
     });
 
@@ -548,5 +564,54 @@ function checkEmailAndPWd() {
         .catch((err) => {
             console.log("Error", err);
             // window.location.href = '/login';
+        });
+}
+
+var loadFile = function (event) {
+    var image = document.getElementById('output');
+    image.src = URL.createObjectURL(event.target.files[0]);
+    document.getElementById("uploadAbout").disabled = false;
+}
+
+function uploadAboutPhoto() {
+    var apiUrl1 = host + "/deletall/about_photo";
+
+    fetch(apiUrl1, {
+        method: 'GET'
+    })
+        .then((response) => {
+            return response;
+        })
+        .then((data) => {
+            UploadPhoto();
+        })
+        .catch((err) => {
+            window.location.href = '/admin';
+        });
+}
+
+function UploadPhoto() {
+    let formData1 = new FormData();
+
+    formData1.append("file", aboutFile[0]);
+    formData1.append("categoryName", "about_photo");
+    formData1.append("categoryPrintName", "About Photo");
+
+    var apiUrl = host + "/UploadPhoto";
+    fetch(apiUrl, {
+        method: 'POST',
+        body: formData1
+    })
+        .then((response) => {
+            return response;
+        })
+        .then((data) => {
+            clearAll();
+            window.location.href = '/admin';
+        })
+        .catch((err) => {
+            console.error(err);
+            clearAll();
+            window.location.href = '/admin';
         });
 }

@@ -85,8 +85,8 @@ const conn = mongoose.connection;
 conn.once('open', () => {
     console.log('Photo Storage connection Open');
 
-    gfs = Grid(conn, mongoose.mongo);
-    gfs.collection('uploads');
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection("uploads");
 });
 
 function makeid(length) {
@@ -158,8 +158,16 @@ app.post("/UploadPhoto", upload.single("file"), (req, res) => {
 });
 
 app.delete("/deletPhotosById/:id", async (req, res) => {
-    console.log('req.params', req.params.id, new ObjectId(req.params.id));
-    gfs.files.deleteOne({ _id: new ObjectId(req.params.id) }, (err, result) => {
+    const file = await gfs.files.findOne({ filename: req.params.id });
+    const gsfb = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: 'uploads' });
+    gsfb.delete(file._id, function (err, gridStore) {
+        if (err) return next(err);
+        res.status(200).end();
+    });
+});
+
+app.get("/deletall", async (req, res) => {
+    gfs.files.remove({ "metadata.categoryName": "test" }, (err, result) => {
         if (err) {
             console.error('error removing that file');
             res.status(400).send("file not Deleted");
@@ -171,17 +179,30 @@ app.delete("/deletPhotosById/:id", async (req, res) => {
     });
 });
 
-app.get("/deletall", async (req, res) => {
-    gfs.files.remove({ "metadata.categoryName": "" }, (err, result) => {
+app.get("/deletall/:id", async (req, res) => {
+    const file = await gfs.files.findOne({ "metadata.categoryName": "about_photo" });
+    console.log('file', file);
+    const gsfb = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: 'uploads' });
+    gsfb.delete(new ObjectId(file._id), function (err, gridStore) {
         if (err) {
-            console.error('error removing that file');
-            res.status(400).send("file not Deleted");
-            process.exit(1);
-        } else {
-            console.info('removed file: ', result);
-            res.status(200).send({ status: 200, message: "Photo Deleted Successfully!!" });
+            console.log('err', err)
         }
+        else {
+            res.status(200).send(gridStore);
+        }
+
     });
+    // console.log('req.params', req.params.id, new ObjectId(req.params.id));
+    // gfs.files.remove({ "metadata.categoryName": "test" }, (err, result) => {
+    //     if (err) {
+    //         console.error('error removing that file');
+    //         res.status(400).send("file not Deleted");
+    //         process.exit(1);
+    //     } else {
+    //         console.info('removed file: ', result);
+    //         res.status(200).send({ status: 200, message: "Photo Deleted Successfully!!" });
+    //     }
+    // });
 });
 
 app.get("/printandpdf/:id", [aakriti.downloadPdf]);

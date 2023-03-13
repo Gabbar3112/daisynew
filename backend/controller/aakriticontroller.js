@@ -8,7 +8,7 @@ const path = require("path");
 const puppeteer = require("puppeteer");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken")
-const config = require("../../config")
+const config = require("../../config");
 
 const schemaOptions = {
   timestamps: { createdAt: 'created_at', updatedAt: 'last_updated' },
@@ -46,6 +46,10 @@ let galleryDiv = {
 <h4>App 1</h4>
 <p>App</p> 
 </div></div>` };
+
+let about_photo = {
+  string: `<img id="output" style="width: 636px; height: 523.317px;" src="/public/img/team.jpg" class="img-fluid" alt="">`
+};
 
 {/* <a href="/public/img/portfolio/portfolio-1.jpg" data-gallery="portfolioGallery"class="portfolio-lightbox preview-link" title="App 1">
 <i class="bx bx-plus"></i></a> 
@@ -163,6 +167,14 @@ function generateRefreshToken(user) {
   return refreshToken
 }
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 var db1, collection, collectionChunks;
 MongoClient.connect("mongodb://ecommarcedb:Ab88Mi!318@mydb-shard-00-00.i78bf.mongodb.net:27017,mydb-shard-00-01.i78bf.mongodb.net:27017,mydb-shard-00-02.i78bf.mongodb.net:27017/myallinoneproject?ssl=true&replicaSet=mydb-shard-0&authSource=admin&retryWrites=true&w=majority", function (err, client) {
   if (err) {
@@ -199,7 +211,7 @@ let htmlConvertion = (htmlGalleryDiv, req, element, finalFile) => {
   }
 
   htmlGalleryDiv.string = htmlGalleryDiv.string.replace(`title="App 1"`, `title="` + element.metadata.categoryName + `"`);
-  htmlGalleryDiv.string = htmlGalleryDiv.string.replace(`idddd`, `onclick="deletePhoto(\'` + element._id.toString() + `'\)"`);
+  htmlGalleryDiv.string = htmlGalleryDiv.string.replace(`idddd`, `onclick="deletePhoto(\'` + element.filename.toString() + `'\)"`);
 
   return htmlGalleryDiv.string;
 }
@@ -214,6 +226,7 @@ function gettime() {
 
   return hour + ':' + minutes + ':' + seconds;
 }
+
 let getPhotosByCategory = (req, res, next) => {
 
   let findChunks = (element, dataObj) => {
@@ -283,32 +296,20 @@ let getPhotosByCategory = (req, res, next) => {
       js.photoCategory = '';
       js.gallaryFilter = '<li data-filter="*" class="filter-active">All</li>';
 
-      MahendiCategory.find({}, function (err, catData) {
+      MahendiCategory.find({ short_name: { $nin: ['about_photo', 'test'] } }, function (err, catData) {
         if (err) {
           console.log("err", err);
           resolve(js);
         } else {
           console.log("cat data found", catData.length, gettime());
 
-          let tableAry = '<select class="form-control" id="newMehndiCategory">';
-          let tableAry1 = '<select class="form-control" id="mehndiCategory">';
-
           for (let i = 0; i < catData.length; i++) {
-            var htmlTrCP = `<option value="` + catData[i].short_name + `">` + catData[i].original_name + `</option>`;
-
-            tableAry = tableAry + htmlTrCP;
-            tableAry1 = tableAry1 + htmlTrCP;
-
             if (catData[i].short_name.toLowerCase() != 'test') {
               let str1 = `<li data-filter=".filter-` + catData[i].short_name + `">` + catData[i].original_name + `</li>`;
               js.gallaryFilter = js.gallaryFilter + str1;
             }
 
           }
-          tableAry = tableAry + `</select>`;
-          tableAry1 = tableAry1 + `</select>`;
-          js.category = tableAry;
-          js.photoCategory = tableAry1;
           resolve(js);
         }
       });
@@ -320,7 +321,7 @@ let getPhotosByCategory = (req, res, next) => {
     return new Promise((resolve, reject) => {
       collection
         // .find({ "metadata.categoryName": 'test' })
-        .find({})
+        .find({ "metadata.categoryName": { $nin: ['test', 'about_photo'] } })
         .toArray((err, files) => {
           if (err) {
             reject({
@@ -330,6 +331,7 @@ let getPhotosByCategory = (req, res, next) => {
             });
           } else {
             let ary = [];
+            files = shuffleArray(files);
             console.log('Total Photos', files.length, gettime());
             files.forEach((element, i) => {
               ary.push(findChunks(element, dataObj));
@@ -367,6 +369,36 @@ let getPhotosByCategory = (req, res, next) => {
 };
 
 let getPhotosByCategoryAdmin = (req, res, next) => {
+
+  let findChunksForAboutPhoto = (element, dataObj) => {
+    return new Promise((resolve, reject) => {
+      if (element.metadata != undefined) {
+        collectionChunks
+          .find({ files_id: element._id })
+          .sort({ n: 1 })
+          .toArray(function (err, chunks) {
+            if (err) {
+              reject(err);
+            }
+            if (!chunks || chunks.length === 0) {
+              resolve();
+            }
+            let fileData = [];
+            for (let i = 0; i < chunks.length; i++) {
+              fileData.push(chunks[i].data.toString("base64"));
+            }
+            let finalFile =
+              "data:" + element.contentType + ";base64," + fileData.join("");
+            element.imgurl = finalFile;
+
+            about_photo.string = about_photo.string.replace(`src="/public/img/team.jpg"`, `src="` + finalFile + `"`);
+            resolve(about_photo.string);
+          });
+      } else {
+        resolve();
+      }
+    });
+  }; // end of findChunksForAboutPhoto
 
   let findChunks = (element, dataObj) => {
     return new Promise((resolve, reject) => {
@@ -472,8 +504,10 @@ let getPhotosByCategoryAdmin = (req, res, next) => {
 
       js.category = '';
       js.photoCategory = '';
+      js.adminGallaryFilter = '<li data-filter="*" class="filter-active">All</li>';
 
-      MahendiCategory.find({}, function (err, catData) {
+      // { short_name: { $nin: ['about_photo'] }}
+      MahendiCategory.find({ }, function (err, catData) {
         if (err) {
           console.log("err", err);
           resolve(js);
@@ -505,6 +539,7 @@ let getPhotosByCategoryAdmin = (req, res, next) => {
   let findPhotosCategory = (dataObj) => {
     console.log("findPhotosCategory");
     return new Promise((resolve, reject) => {
+      // "metadata.categoryName": { $nin: ['about_photo'] } 
       collection
         .find({})
         .toArray((err, files) => {
@@ -516,6 +551,7 @@ let getPhotosByCategoryAdmin = (req, res, next) => {
             });
           } else {
             let ary = [];
+            files = shuffleArray(files);
             console.log('Total Photos', files.length, gettime());
             files.forEach((element, i) => {
               ary.push(findChunks(element, dataObj));
@@ -525,8 +561,6 @@ let getPhotosByCategoryAdmin = (req, res, next) => {
                 console.log('photos retrive', gettime());
                 return (data);
               })
-              .then(getBills)
-              .then(findCategory)
               .then((data) => {
                 resolve(data);
               })
@@ -538,7 +572,45 @@ let getPhotosByCategoryAdmin = (req, res, next) => {
     });
   }; // end of findPhotosCategory
 
+  let findAboutPhoto = (dataObj) => {
+    console.log("findAboutPhoto");
+    return new Promise((resolve, reject) => {
+      collection
+        .find({ "metadata.categoryName": 'about_photo' })
+        .toArray((err, files) => {
+          if (err) {
+            reject({
+              title: "File error",
+              message: "Error finding file",
+              error: err.errMsg,
+            });
+          } else {
+            let ary = [];
+            console.log('Total Photos', files.length, gettime());
+            files.forEach((element, i) => {
+              ary.push(findChunksForAboutPhoto(element, dataObj));
+            });
+            Promise.all(ary)
+              .then((data) => {
+                console.log('photos retrive', gettime());
+                return (data);
+              })
+              .then((data) => {
+                dataObj.about_photo = data
+                resolve(dataObj);
+              })
+              .catch((er) => {
+                reject(er);
+              });
+          }
+        });
+    });
+  };
+
   findPhotosCategory()
+    .then(getBills)
+    .then(findCategory)
+    .then(findAboutPhoto)
     .then((resolve) => {
       let photos = resolve.photos.join('');
       res.render('adminIndex', {
@@ -547,7 +619,8 @@ let getPhotosByCategoryAdmin = (req, res, next) => {
         total_in: resolve.total_inc,
         allCategoryForDelete: resolve.category,
         allCategoryForUpload: resolve.photoCategory,
-        adminGallaryFilter: resolve.adminGallaryFilter
+        adminGallaryFilter: resolve.adminGallaryFilter,
+        about_photo: resolve.about_photo
       });
     })
     .catch((err) => {
@@ -649,12 +722,12 @@ let creteNewCategory = (req, res) => {
     console.log("insertCategory", req.body);
     return new Promise((resolve, reject) => {
       MahendiCategory.create(req.body,
-        function (err, billData) {
+        function (err, catData) {
           if (err) {
             console.log("err", err);
             reject(err);
           } else {
-            resolve(billData);
+            resolve(catData);
           }
         }
       );

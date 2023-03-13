@@ -99,6 +99,7 @@
             <nav id="navbar" class="navbar">
                 <ul>
                     <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                    <li><a class="nav-link scrollto " href="#about">About</a></li>
                     <li><a class="nav-link scrollto " href="#portfolio">Gallery</a></li>
                     <li><a class="nav-link scrollto " href="#listInvoice">List Invoice</a></li>
                     <li><a class="nav-link scrollto " href="#uploadPhotos">Upload Photos</a></li>
@@ -116,6 +117,42 @@
         </div>
     </section>
     <main id="main">
+        <section id="about" class="about">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-left">
+                        <%- about_photo %>
+                    </div>
+
+                    <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right">
+                        <h3>Aakriti Mehndi Creations</h3>
+                        <p>To Change Photo, upload new and click on Save button</p>
+                        <input type="file" accept="image/*" name="aboutFile" id="aboutFile" onchange="loadFile(event)">
+                        <button class="file-upload-browse btn btn-primary" disabled="true" id="uploadAbout"
+                            onclick="uploadAboutPhoto()" type="button">Upload</button>
+                        <!-- <p class="fst-italic">
+                            We provided our services throughout India since 2010. We
+                            focusing on providing excellent quality smehndi services to
+                            our clients for various events and celebrations like. </p>
+                        <ul>
+                            <li><i class="bi bi-check-circle"></i> Bridal Mehndi </li>
+                            <li><i class="bi bi-check-circle"></i> Engagement Mehndi</li>
+                            <li><i class="bi bi-check-circle"></i> Baby Shower Mehndi</li>
+                            <li><i class="bi bi-check-circle"></i> Mehndi Rasams or Mehndi Parties</li>
+                            <li><i class="bi bi-check-circle"></i> Teej Mehndi</li>
+                            <li><i class="bi bi-check-circle"></i> KarwaChauth Mehndi</li>
+                        </ul>
+                        <p>
+                            Basically we are based in Surat-Gujarat, but we have
+                            extended ourselves to all over the India. We have team of
+                            more than 30 artists with excellent creative skills to make
+                            your Mehndi and special day....A memorable event of your
+                            life...!!!
+                        </p> -->
+                    </div>
+                </div>
+            </div>
+        </section>
         <section id="portfolio" class="portfolio">
             <div class="container">
                 <div class="section-title"> <span>Gallery</span>
@@ -259,16 +296,7 @@
                             class="btn btn-primary">Create New Category</button> -->
                     </div>
                     <div class="form-group col-lg-4" style="padding-top: 20px;">
-                        <!-- <label>File upload</label>
-                        <input type="file" name="img[]" id="files" multiple class="file-upload-default">
-                        <div class="input-group col-xs-12">
-                            <input type="text" class="form-control file-upload-info" id="listFilename" disabled
-                                placeholder="Upload Image">
-                            <span class="input-group-append">
-                                <button class="file-upload-browse btn btn-primary" onclick="submitPhotos()"
-                                    type="button">Upload</button>
-                            </span>
-                        </div> -->
+
                     </div>
                     <div class="form-group col-lg-4" style="padding-top: 20px;">
                         <!-- <button type="submit" name="delNewCatSubmit" id="delNewCatSubmit" onclick="deleteCate()"
