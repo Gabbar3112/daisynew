@@ -51,10 +51,6 @@ let about_photo = {
   string: `<img id="output" style="width: 636px; height: 523.317px;" src="/public/img/team.jpg" class="img-fluid" alt="">`
 };
 
-{/* <a href="/public/img/portfolio/portfolio-1.jpg" data-gallery="portfolioGallery"class="portfolio-lightbox preview-link" title="App 1">
-<i class="bx bx-plus"></i></a> 
-<a href="portfolio-details.html" class="details-link" title="More Details">
-<iclass="bx bx-link"></i></a> */}
 let admingalleryDiv = {
   string: `
 <div class="col-lg-4 col-md-6 portfolio-item filter-app">

@@ -12,6 +12,7 @@ let listCat = {
     "babyShowerMehndi": "Baby Shower Mehndi",
     "aakritiMehndiClasses": "Aakriti Mehndi Classes",
     "classStudentWork": "Class Student Work",
+    "about_photo": "About Photo",
 };
 
 var host = window.location.protocol + "//" + window.location.host;
@@ -573,7 +574,7 @@ var loadFile = function (event) {
     document.getElementById("uploadAbout").disabled = false;
 }
 
-function uploadAboutPhoto() {
+function deleteOldAbout() {
     var apiUrl1 = host + "/deletall/about_photo";
 
     fetch(apiUrl1, {
@@ -595,7 +596,7 @@ function UploadPhoto() {
 
     formData1.append("file", aboutFile[0]);
     formData1.append("categoryName", "about_photo");
-    formData1.append("categoryPrintName", "About Photo");
+    formData1.append("categoryPrintName", listCat["about_photo"]);
 
     var apiUrl = host + "/UploadPhoto";
     fetch(apiUrl, {
