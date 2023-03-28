@@ -200,6 +200,51 @@ MongoClient.connect("mongodb://ecommarcedb:Ab88Mi!318@mydb-shard-00-00.i78bf.mon
   db1 = client.db("myallinoneproject");
   collection = db1.collection("uploads.files");
   collectionChunks = db1.collection("uploads.chunks");
+  tokenCol.collection.getIndexes({ full: true })
+    .then((data) => {
+      // console.log(data)
+      let flag = true;
+      (data).filter((x) => {
+        console.log(x.name);
+        if (x.name === 'userId_1') {
+          tokenCol.collection.dropIndex('userId_1')
+            .then((res1) => {
+              console.log(res1);
+            })
+            .catch((e) => {
+              console.log('e', e);
+            })
+        }
+        if (x.name === 'expireAt_1') {
+          flag = false;
+          tokenCol.collection.dropIndex('expireAt_1')
+            .then((res1) => {
+              console.log(res1);
+              tokenCol.collection.createIndex({ "expireAt": 1 }, { expireAfterSeconds: 0 })
+                .then((res) => {
+                  console.log('res', res)
+                })
+                .catch((err1) => {
+                  console.log('err1', err1)
+                })
+            })
+            .catch((err2) => {
+              console.log(err2);
+            })
+        } else {
+          tokenCol.collection.createIndex({ "expireAt": 1 }, { expireAfterSeconds: 0 })
+            .then((res) => {
+              console.log('res', res)
+            })
+            .catch((err1) => {
+              console.log('err1', err1)
+            })
+        }
+      });
+    })
+    .catch((err) => {
+      console.log(err)
+    });
 });
 
 let htmlConvertion = (htmlGalleryDiv, req, element, finalFile) => {
@@ -234,6 +279,8 @@ function gettime() {
   return hour + ':' + minutes + ':' + seconds;
 }
 
+
+
 let getPhotosByCategory = (req, res, next) => {
 
   let findChunks = (element, dataObj) => {
@@ -266,7 +313,7 @@ let getPhotosByCategory = (req, res, next) => {
                 500,
                 null
               );
-              resolve();
+              resolve(apiResponse);
             }
             let fileData = [];
             for (let i = 0; i < chunks.length; i++) {
@@ -437,7 +484,7 @@ let getPhotosByCategoryAdmin = (req, res, next) => {
                 500,
                 null
               );
-              resolve();
+              resolve(apiResponse);
             }
             let fileData = [];
             for (let i = 0; i < chunks.length; i++) {
@@ -886,7 +933,7 @@ let checkUser = (req, res) => {
       let timestamp1 = new Date(timestamp);
       let newAuthToken = new tokenCol({
         userId: tokenDetails.userId,
-        expireAt: timestamp1.setMinutes(timestamp.getMinutes() + 1440), // set expiry after 24 hours. 1440 == 24 hour
+        expireAt: timestamp1.setMinutes(timestamp.getMinutes() + 30), // set expiry after 24 hours. 1440 == 24 hour
         authToken: tokenDetails.token,
         tokenSecret: tokenDetails.tokenSecret,
         tokenGenerationTime: new Date().getTime()
@@ -895,8 +942,7 @@ let checkUser = (req, res) => {
       newAuthToken.save((err, newTokenDetails) => {
         if (err) {
           console.log(err);
-          let apiResponse = response.generate(true, "Failed to save token", 500, null);
-          reject(apiResponse);
+          reject("Failed to save token");
         } else {
           let responseBody = {
             authToken: newTokenDetails.authToken,

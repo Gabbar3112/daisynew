@@ -23,15 +23,15 @@ let isAuthorize = (req, res, next) => {
             if (err) {
                 console.log(err);
                 res.status(200);
-        res.redirect('login');
+                res.redirect('login');
             } else if (isEmpty(authDetails)) {
                 res.status(200);
-        res.redirect('login');
+                res.redirect('login');
             } else {
                 token.verifyClaims(authDetails.authToken, (err, decoded) => {
                     if (err) {
                         res.status(200);
-        res.redirect('login');
+                        res.redirect('login');
                     } else {
                         console.log(decoded.data);
                         req.user = decoded.data;
