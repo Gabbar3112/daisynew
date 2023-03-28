@@ -8,12 +8,9 @@ const Grid = require("gridfs-stream");
 const multer = require("multer");
 const crypto = require("crypto");
 const path = require("path");
-var fs = require('fs');
 var bodyParser = require("body-parser");
 const ObjectId = mongoose.Types.ObjectId;
-const jwt = require("jsonwebtoken");
 const cors = require('cors');
-const https = require('https');
 
 const aakriti = require("./backend/controller/aakriticontroller");
 const config = require("./config");
@@ -54,8 +51,9 @@ app.use('/public/img', express.static(__dirname + '/public/img'));
 // Set View's
 app.set('views', './views');
 app.set('view engine', 'ejs');
+require('dotenv').config();
 
-// let db = mongoose.connect("mongodb://ecommarcedb:Ab88Mi!318@mydb-shard-00-00.i78bf.mongodb.net:27017,mydb-shard-00-01.i78bf.mongodb.net:27017,mydb-shard-00-02.i78bf.mongodb.net:27017/myallinoneproject?ssl=true&replicaSet=mydb-shard-0&authSource=admin&retryWrites=true&w=majority", {
+// let db = mongoose.connect(process.env.mongoUrl, {
 //     useUnifiedTopology: true,
 //     useNewUrlParser: true,
 // });
@@ -77,7 +75,7 @@ mongoose.connection.on("open", function (err) {
     }
 }); // enr mongoose connection o
 
-const mongoURI = "mongodb://ecommarcedb:Ab88Mi!318@mydb-shard-00-00.i78bf.mongodb.net:27017,mydb-shard-00-01.i78bf.mongodb.net:27017,mydb-shard-00-02.i78bf.mongodb.net:27017/myallinoneproject?ssl=true&replicaSet=mydb-shard-0&authSource=admin&retryWrites=true&w=majority";
+const mongoURI = process.env.mongoUrl;
 
 const promise = mongoose.connect(mongoURI, { useNewUrlParser: true });
 
@@ -121,28 +119,6 @@ const storage = new GridFsStorage({
     }
 });
 const upload = multer({ storage });
-
-
-function validateToken(req, res, next) {//get token from request header
-    if (req.headers["authorization"]) {
-        const authHeader = req.headers["authorization"]
-        const token = authHeader.split(" ")[1]
-        //the request header contains the token "Bearer <token>", split the string and use the second value in the split array.
-        if (token == null) res.sendStatus(400).send("Token not present")
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-            if (err) {
-                res.status(403).send("Token invalid")
-            }
-            else {
-                req.user = user;
-                next() //proceed to the next action in the calling function
-            }
-        })
-    }
-    else {
-        res.status(403).send("Access Denied");
-    } //end of jwt.verify()
-} //end of function
 
 // Navigation
 
