@@ -17,6 +17,7 @@ const https = require('https');
 
 const aakriti = require("./backend/controller/aakriticontroller");
 const config = require("./config");
+const middleware = require('./backend/middlewares/auth');
 let gfs;
 
 app.use(morgan("dev"));
@@ -151,9 +152,9 @@ app.get('/login', (req, res) => {
     res.render('login', {})
 })
 
-app.get('/admin', [aakriti.getPhotosByCategoryAdmin]);
+app.get('/admin', middleware.isAuthorize, [aakriti.getPhotosByCategoryAdmin]);
 
-app.post("/UploadPhoto", upload.single("file"), (req, res) => {
+app.post("/UploadPhoto", middleware.isAuthorize, upload.single("file"), (req, res) => {
     res.status(200).send("Photo upload Successfully!!");
 });
 
@@ -205,17 +206,17 @@ app.get("/deletall/:id", async (req, res) => {
     // });
 });
 
-app.get("/printandpdf/:id", [aakriti.downloadPdf]);
+app.get("/printandpdf/:id", middleware.isAuthorize, [aakriti.downloadPdf]);
 
-app.get("/deleteRecord/:id", [aakriti.deletePdf]);
+app.get("/deleteRecord/:id", middleware.isAuthorize, [aakriti.deletePdf]);
 
 app.post("/checkUser", [aakriti.checkUser]);
 
-app.post("/billing", [aakriti.saveBilling]);
+app.post("/billing", middleware.isAuthorize, [aakriti.saveBilling]);
 
-app.post("/category", [aakriti.creteNewCategory]);
+app.post("/category", middleware.isAuthorize, [aakriti.creteNewCategory]);
 
-app.delete("/deleteCategory/:id", [aakriti.deleteCategory]);
+app.delete("/deleteCategory/:id", middleware.isAuthorize, [aakriti.deleteCategory]);
 
 app.post("/createUser", [aakriti.createUser]);
 

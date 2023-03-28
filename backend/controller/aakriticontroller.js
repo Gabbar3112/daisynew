@@ -9,6 +9,7 @@ const puppeteer = require("puppeteer");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken")
 const config = require("../../config");
+const tokenLib = require('../lib/tokenLib');
 
 const schemaOptions = {
   timestamps: { createdAt: 'created_at', updatedAt: 'last_updated' },
@@ -36,6 +37,16 @@ const User = mongoose.model('User', mongoose.Schema({
   userName: { type: String, required: true, unique: true, dropDups: true },
   password: { type: String, unique: true, required: true, dropDups: true },
 }, schemaOptions));
+
+const tokenCol = mongoose.model('tokenCollection', mongoose.Schema({
+  userId: { type: String, default: '', },
+  authToken: { type: String, default: '' },
+  tokenSecret: { type: String, default: '' },
+  tokenGenerationTime: { type: String, default: '' },
+  createdOn: { type: Date, default: new Date() },
+  expireAt: { type: Date }
+}, schemaOptions));
+
 
 // full-old-div
 let galleryDiv = {
@@ -503,7 +514,7 @@ let getPhotosByCategoryAdmin = (req, res, next) => {
       js.adminGallaryFilter = '<li data-filter="*" class="filter-active">All</li>';
 
       // { short_name: { $nin: ['about_photo'] }}
-      MahendiCategory.find({ }, function (err, catData) {
+      MahendiCategory.find({}, function (err, catData) {
         if (err) {
           console.log("err", err);
           resolve(js);
@@ -815,13 +826,94 @@ let checkUser = (req, res) => {
     });
   }; // end of checkUserDetails
 
-  checkUserDetails()
+  let pwdMatch = () => {
+    console.log("pwdMatch", req.body);
+    return new Promise((resolve, reject) => {
+      // user == "aakritimehndi@gmail.com" && pwd == "testDaisyAakriti!318"
+      User.findOne({ userName: req.body.user }, function (err, userData) {
+        if (err) {
+          reject("No User Found...!!");
+        } else {
+          console.log("userData", err, userData);
+          bcrypt.compare(req.body.pwd, userData.password, function (err, match) {
+            if (err) {
+              reject("Password Dont matched");
+            } else if (match === true) {
+              console.log('finaltokens', userData);
+              generateToken(userData)
+                .then((finaltokens) => {
+                  resolve(finaltokens);
+                })
+                .catch((e) => {
+                  reject(e)
+                })
+            } else {
+              reject("Wrong Password");
+            }
+          })
+        }
+      })
+    });
+  };// end of pwdMatch function
+
+  let generateToken = (user) => {
+    console.log("generateToken");
+    return new Promise((resolve, reject) => {
+      tokenLib.generateToken(user, (err, tokenDetails) => {
+        if (err) {
+          reject("Failed to generate token");
+        } else {
+          let finalObject = user.toObject();
+          delete finalObject.__v;
+          tokenDetails.userId = user._id
+          tokenDetails.userDetails = finalObject;
+          saveToken(tokenDetails)
+            .then((saveTokenResult) => {
+              resolve(saveTokenResult);
+            })
+            .catch((e) => {
+              reject(e)
+            })
+        }
+      });
+    });
+  }; // end of generateToken
+
+  let saveToken = (tokenDetails) => {
+    console.log("saveToken");
+    return new Promise((resolve, reject) => {
+      let timestamp = new Date();
+      let timestamp1 = new Date(timestamp);
+      let newAuthToken = new tokenCol({
+        userId: tokenDetails.userId,
+        expireAt: timestamp1.setMinutes(timestamp.getMinutes() + 1440), // set expiry after 24 hours. 1440 == 24 hour
+        authToken: tokenDetails.token,
+        tokenSecret: tokenDetails.tokenSecret,
+        tokenGenerationTime: new Date().getTime()
+      });
+
+      newAuthToken.save((err, newTokenDetails) => {
+        if (err) {
+          console.log(err);
+          let apiResponse = response.generate(true, "Failed to save token", 500, null);
+          reject(apiResponse);
+        } else {
+          let responseBody = {
+            authToken: newTokenDetails.authToken,
+          };
+          resolve(responseBody);
+        }
+      });
+    });
+
+  }; // end of saveToken
+
+  pwdMatch()
     .then((resolve) => {
-      // res.status(200).send(resolve);
-      res.status(200);
-      // // res.setHeader("authorization", resolve.accessToken);
-      // res.setHeader('authorization', 'Bearer '+ resolve.accessToken); 
-      res.redirect('/admin');
+      console.log('resolve', resolve);
+      res.status(200).send({ authToken: resolve.authToken });
+      // res.redirect('admin');
+      // res.render('adminIndex', { authToken: resolve.authToken });
     })
     .catch((err) => {
       console.log("err", err);

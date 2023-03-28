@@ -55,7 +55,7 @@
             bottom: -80px;
         }
 
-        form {
+        .divForm {
             height: 520px;
             width: 400px;
             background-color: rgba(255, 255, 255, 0.13);
@@ -70,7 +70,7 @@
             padding: 50px 35px;
         }
 
-        form * {
+        .divForm * {
             font-family: 'Poppins', sans-serif;
             color: #ffffff;
             letter-spacing: 0.5px;
@@ -78,7 +78,7 @@
             border: none;
         }
 
-        form h3 {
+        .divForm h3 {
             font-size: 32px;
             font-weight: 500;
             line-height: 42px;
@@ -108,7 +108,7 @@
             color: #e5e5e5;
         }
 
-        button {
+        .button {
             margin-top: 50px;
             width: 100%;
             background-color: #ffffff;
@@ -119,33 +119,6 @@
             border-radius: 5px;
             cursor: pointer;
         }
-
-        .social {
-            margin-top: 30px;
-            display: flex;
-        }
-
-        .social div {
-            background: red;
-            width: 150px;
-            border-radius: 3px;
-            padding: 5px 10px 10px 5px;
-            background-color: rgba(255, 255, 255, 0.27);
-            color: #eaf0fb;
-            text-align: center;
-        }
-
-        .social div:hover {
-            background-color: rgba(255, 255, 255, 0.47);
-        }
-
-        .social .fb {
-            margin-left: 25px;
-        }
-
-        .social i {
-            margin-right: 4px;
-        }
     </style>
 </head>
 
@@ -154,21 +127,22 @@
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
-    <form action="/checkUser" method="POST" enctype="application/x-www-form-urlencoded">
+    <!-- <form action="/checkUser" method="POST" enctype="application/x-www-form-urlencoded"> -->
+    <div class="divForm">
         <h3>Login Here</h3>
 
         <label for="username">Username</label>
-        <input type="text" placeholder="Email or Phone" id="username" name="user">
+        <input type="text" placeholder="Email or Phone" id="username" name="user" required>
 
         <label for="password">Password</label>
-        <input type="password" placeholder="Password" id="password" name="pwd">
+        <input type="password" placeholder="Password" id="password" name="pwd" required>
 
         <!-- <a> -->
-        <button id="checkPasswords" type="submit">Log In</button>
+        <button id="checkPasswords" class="button" type="submit" onclick="checkEmailAndPWd()">Log In</button>
         <!-- </a> -->
 
-
-    </form>
+    </div>
+    <!-- </form> -->
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="/public/js/admin.js"></script>

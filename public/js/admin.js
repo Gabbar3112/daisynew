@@ -344,7 +344,8 @@ function PrintData() {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authToken': localStorage.getItem('token')
         },
         body: JSON.stringify(final)
     })
@@ -382,6 +383,9 @@ function submitPhotos() {
         var apiUrl = host + "/UploadPhoto";
         fetch(apiUrl, {
             method: 'POST',
+            headers: {
+                'authToken': localStorage.getItem('token')
+            },
             body: formData1
         })
             .then((response) => {
@@ -434,7 +438,10 @@ function printRecord(id) {
 
     var apiUrl = host + "/printandpdf/" + id;
     fetch(apiUrl, {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+            'authToken': localStorage.getItem('token')
+        },
     })
         .then((response) => {
             return response.blob();
@@ -454,7 +461,10 @@ function deleteRecord(id) {
 
     var apiUrl = host + "/deleteRecord/" + id;
     fetch(apiUrl, {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+            'authToken': localStorage.getItem('token')
+        },
     })
         .then((response) => {
             return response.json();
@@ -493,7 +503,8 @@ function createNewCat() {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authToken': localStorage.getItem('token')
         },
         body: JSON.stringify(json)
     })
@@ -517,7 +528,10 @@ function deleteCate() {
     console.log('cat', cat);
     var apiUrl = host + "/deleteCategory/" + cat;
     fetch(apiUrl, {
-        method: 'delete'
+        method: 'delete',
+        headers: {
+            'authToken': localStorage.getItem('token')
+        },
     })
         .then((response) => {
             return response.json();
@@ -536,7 +550,7 @@ function deleteCate() {
 function checkEmailAndPWd() {
     console.log('checkEmailAndPWd');
     let json = {
-        uer: document.getElementById('username').value,
+        user: document.getElementById('username').value,
         pwd: document.getElementById('password').value
     };
 
@@ -551,17 +565,10 @@ function checkEmailAndPWd() {
         body: JSON.stringify(json)
     })
         .then(res => res.json())
-        .then(json => console.log(json))
-        // .then((response) => {
-        //     console.log('response', response);
-        //     return JSON.parse(response)
-        // })
-        // .then((data) => {
-        //     console.log("data", data);
-        //     // window.localStorage.setItem(accessToken, data.accessToken);
-        //     // window.localStorage.setItem(refreshToken, data.refreshToken);
-        //     // window.location.href = '/admin';
-        // })
+        .then(json => {
+            localStorage.setItem('token', json.authToken);
+            window.location.href = host + "/admin?authToken=" + localStorage.getItem('token');
+        })
         .catch((err) => {
             console.log("Error", err);
             // window.location.href = '/login';

@@ -26,7 +26,8 @@
     "multer": "1.4.4",
     "multer-gridfs-storage": "^5.0.2",
     "node-fetch": "^3.3.0",
-    "puppeteer": "^19.7.3"
+    "puppeteer": "^19.7.3",
+    "shortid": "^2.2.16"
   },
   "devDependencies": {
     "nodemon": "^2.0.21"
