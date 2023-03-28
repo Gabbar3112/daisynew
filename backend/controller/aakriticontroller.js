@@ -11,8 +11,6 @@ const jwt = require("jsonwebtoken")
 const config = require("../../config");
 const tokenLib = require('../lib/tokenLib');
 
-require('dotenv').config();
-
 const schemaOptions = {
   timestamps: { createdAt: 'created_at', updatedAt: 'last_updated' },
 };
@@ -164,14 +162,14 @@ async function puppeterPDF(htmlData) {
 }
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" })
+  return jwt.sign(user, config.ACCESS_TOKEN_SECRET, { expiresIn: "15m" })
 }
 
 let refreshTokens = [];
 
 function generateRefreshToken(user) {
   const refreshToken =
-    jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "20m" })
+    jwt.sign(user, config.REFRESH_TOKEN_SECRET, { expiresIn: "20m" })
   refreshTokens.push(refreshToken)
   return refreshToken
 }
@@ -185,7 +183,7 @@ function shuffleArray(array) {
 }
 
 var db1, collection, collectionChunks;
-MongoClient.connect(process.env.mongoUrl, function (err, client) {
+MongoClient.connect("mongodb://ecommarcedb:Ab88Mi!318@mydb-shard-00-00.i78bf.mongodb.net:27017,mydb-shard-00-01.i78bf.mongodb.net:27017,mydb-shard-00-02.i78bf.mongodb.net:27017/myallinoneproject?ssl=true&replicaSet=mydb-shard-0&authSource=admin&retryWrites=true&w=majority", function (err, client) {
   if (err) {
     let apiResponse = generate(
       true,

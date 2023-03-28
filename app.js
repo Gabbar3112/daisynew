@@ -51,7 +51,6 @@ app.use('/public/img', express.static(__dirname + '/public/img'));
 // Set View's
 app.set('views', './views');
 app.set('view engine', 'ejs');
-require('dotenv').config();
 
 // let db = mongoose.connect(process.env.mongoUrl, {
 //     useUnifiedTopology: true,
@@ -75,7 +74,7 @@ mongoose.connection.on("open", function (err) {
     }
 }); // enr mongoose connection o
 
-const mongoURI = process.env.mongoUrl;
+const mongoURI = "mongodb://ecommarcedb:Ab88Mi!318@mydb-shard-00-00.i78bf.mongodb.net:27017,mydb-shard-00-01.i78bf.mongodb.net:27017,mydb-shard-00-02.i78bf.mongodb.net:27017/myallinoneproject?ssl=true&replicaSet=mydb-shard-0&authSource=admin&retryWrites=true&w=majority";
 
 const promise = mongoose.connect(mongoURI, { useNewUrlParser: true });
 
