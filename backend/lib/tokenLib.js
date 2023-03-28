@@ -2,6 +2,8 @@
 
 const jwt = require('jsonwebtoken');
 const shortid = require('shortid');
+
+require('dotenv').config();
 // we should have a string which should not be predicatble by anyone and which is used to decode the token
 
 // function for generating a JWT TOKEN
